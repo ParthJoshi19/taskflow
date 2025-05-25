@@ -9,9 +9,12 @@ import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import axios from "axios";
 // const theme: DefaultTheme = {};
 
-const ThemeContext = createContext({
+const ThemeContext = createContext<{
+  theme: string;
+  setTheme: React.Dispatch<React.SetStateAction<string>>;
+}>({
   theme: "light",
-  setTheme: (t: string) => {},
+  setTheme: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
