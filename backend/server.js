@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 app.use(express.json());
 app.use(cors({
-  origin: 'https://your-frontend.vercel.app',
+  origin: 'https://taskflow-one-zeta.vercel.app/',
   credentials: true
 }));
 
