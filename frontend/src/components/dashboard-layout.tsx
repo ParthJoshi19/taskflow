@@ -1,4 +1,5 @@
 import type React from "react";
+import { useTheme } from "../components/theme-provider";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [organization, setOrganization] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
-
+  const {theme}=useTheme() as any;
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -116,7 +117,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex bg-blue-50/30">
+    <div className={`min-h-screen flex ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-blue-50/30'}`}> 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
@@ -129,7 +130,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w- bg-white shadow-lg transform ${
+        className={`fixed  left-0 z-50 w-64 ${theme ==='light'?"bg-white ":"bg-slate-700 text-white"} shadow-lg transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}
       >
@@ -150,7 +151,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <h3 className={`text-sm font-medium ${theme==='light'?"text-gray-600":""} uppercase tracking-wider`}>
               Organization
             </h3>
             <p className="mt-1 text-lg font-medium">{organization?.name}</p>
@@ -166,7 +167,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-blue-50 text-blue-800"
-                      : "text-gray-600 hover:bg-blue-50 hover:text-blue-800"
+                      : `${theme==='light'?"text-gray-600":""} hover:bg-blue-50 hover:text-blue-800`
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -179,10 +180,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="w-full">
+      <div className="w-full h-screen">
         <div className="">
           {/* Top navigation */}
-          <div className="sticky top-0 z-40 bg-white shadow-sm border-b">
+          <div className={`sticky top-0 z-40 ${theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white'} shadow-sm border-b`}>
             <div className="flex items-center justify-between h-16 px-6">
               <Button
                 variant="ghost"
@@ -278,9 +279,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             </div>
           </div>
-
+          
           {/* Page content */}
-          <main className="p-6 ">{children}</main>
+          <main className={`${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-slate-100'} p-6`}>{children}</main>
         </div>
       </div>
     </div>

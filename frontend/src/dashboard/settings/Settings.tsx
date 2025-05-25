@@ -11,7 +11,10 @@ import { Save, Building, Palette } from "lucide-react"
 import DashboardLayout from "@/components/dashboard-layout"
 import axios from 'axios';
 import { Loader2 } from "lucide-react"
+import { useTheme } from "@/components/theme-provider"
+
 export default function SettingsPage() {
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
@@ -84,10 +87,10 @@ export default function SettingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 w-[100%]">
+      <div className={`space-y-6 w-[100%] ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>
         <div>
           <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-gray-600">Manage your organization settings</p>
+          <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Manage your organization settings</p>
         </div>
 
         {message && (
@@ -98,7 +101,7 @@ export default function SettingsPage() {
 
         <div className="grid gap-6">
           {/* Organization Settings */}
-          <Card>
+          <Card className={theme === 'dark' ? 'bg-slate-800 text-white' : ''}>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Building className={`h-5 w-5 text-blue-600`} />
@@ -145,7 +148,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* User Preferences */}
-          <Card>
+          <Card className={theme === 'dark' ? 'bg-slate-800 text-white' : ''}>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Palette className={`h-5 w-5 text-blue-600`} />

@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle, AlertTriangle, Users, TrendingUp, Loader2 } from "lucide-react"
 import DashboardLayout from "./../components/dashboard-layout"
 import axios from 'axios';
+import { useTheme } from "@/components/theme-provider"
+
 interface DashboardStats {
   totalTasks: number
   completedTasks: number
@@ -15,6 +17,7 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
+  const { theme } = useTheme();
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -50,10 +53,10 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 w-full">
+      <div className={`space-y-6 w-full ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-gray-600">Overview of your organization's task management</p>
+          <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Overview of your organization's task management</p>
         </div>
 
         {/* Key Metrics */}

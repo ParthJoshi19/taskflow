@@ -164,4 +164,32 @@ const updateSettings=async (req,res)=>{
   }
 }
 
-export default { getName, getNots,getStats, updateSettings };
+const getTheme=async(req,res)=>{
+  try {
+    const {  token } = req.query;
+    if (!token) {
+      return res.json({ message: "No token provided" }).status(401);
+    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
+    }
+    const organization = await Organization.findById(decoded.organizationId);
+    if (!organization) {
+      return res.json({ message: "Organization not found" }).status(404);
+    }
+
+    return res.json({ theme:organization.settings.theme }).status(200);
+  } catch (error) {
+    console.error("Error while updating settings", error);
+    return res.json({ message: "Error while updating settings" }).status(500);
+  }
+}
+
+export default { getName, getNots,getStats, updateSettings,getTheme };

@@ -18,6 +18,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Plus, Search, Calendar, User, AlertTriangle } from "lucide-react"
 import DashboardLayout from "@/components/dashboard-layout"
 import axios from 'axios';
+import { useTheme } from "@/components/theme-provider"
+
 interface Task {
   _id: string
   title: string
@@ -46,6 +48,7 @@ interface TaskUser {
 }
 
 export default function TasksPage() {
+  const { theme } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([])
   const [users, setUsers] = useState<TaskUser[]>([])
   const [loading, setLoading] = useState(true)
@@ -198,11 +201,11 @@ export default function TasksPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 w-full">
+      <div className={`space-y-6 w-full ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Tasks</h1>
-            <p className="text-gray-600">Manage and track your organization's tasks</p>
+            <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Manage and track your organization's tasks</p>
           </div>
           {canCreateTask && (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
@@ -348,12 +351,12 @@ export default function TasksPage() {
         {/* Tasks Grid */}
         <div className="grid gap-4 " >
           {filteredTasks.map((task) => (
-            <Card key={task._id} className="hover:shadow-md transition-shadow">
+            <Card key={task._id} className={theme === 'dark' ? 'bg-slate-800 text-white' : 'hover:shadow-md transition-shadow'}>
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
                     <CardTitle className="text-lg">{task.title}</CardTitle>
-                    <CardDescription>{task.description}</CardDescription>
+                    <CardDescription className={theme === 'dark' ? 'text-gray-400' : ''}>{task.description}</CardDescription>
                   </div>
                   <div className="flex space-x-2">
                     <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
@@ -363,7 +366,7 @@ export default function TasksPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <div className={`flex items-center space-x-4 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}> 
                     <div className="flex items-center space-x-1">
                       <Calendar className="h-4 w-4" />
                       <span>{new Date(task.dueDate).toLocaleDateString()}</span>
@@ -408,8 +411,8 @@ export default function TasksPage() {
         {filteredTasks.length === 0 && (
           <div className="text-center py-12">
             <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No tasks found</h3>
-            <p className="text-gray-600">
+            <h3 className={`text-lg font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>No tasks found</h3>
+            <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
               {searchTerm || statusFilter !== "all" || priorityFilter !== "all"
                 ? "Try adjusting your filters"
                 : "Create your first task to get started"}

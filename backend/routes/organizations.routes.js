@@ -30,4 +30,10 @@ router.patch(
   organizationController.updateSettings
 );
 
+router.get(
+  "/getTheme",
+  [body("token").isEmpty().withMessage("Token is require")],
+  organizationController.getTheme
+);
+
 export default router;

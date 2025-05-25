@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Mail, UserX, Copy, Check,Loader2 } from "lucide-react"
 import DashboardLayout from "@/components/dashboard-layout"
 import axios from "axios"
+import { useTheme } from "@/components/theme-provider"
 
 interface User {
   _id: string
@@ -26,6 +27,7 @@ interface User {
 }
 
 export default function MembersPage() {
+  const { theme } = useTheme();
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [showInviteDialog, setShowInviteDialog] = useState(false)
@@ -174,11 +176,11 @@ export default function MembersPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 w-[100%]">
+      <div className={`space-y-6 w-[100%] ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Team Members</h1>
-            <p className="text-gray-600">Manage your organization's team members</p>
+            <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Manage your organization's team members</p>
           </div>
           {canInviteUsers && (
             <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
@@ -256,7 +258,7 @@ export default function MembersPage() {
         {/* Members List */}
         <div className="grid gap-4">
           {users.map((user) => (
-            <Card key={user._id}>
+            <Card key={user._id} className={theme === 'dark' ? 'bg-slate-800 text-white' : ''}>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-center">
                   <div className="space-y-1">
@@ -264,8 +266,8 @@ export default function MembersPage() {
                       <h3 className="font-medium">{user.name}</h3>
                       <Badge className={getRoleColor(user.role)}>{user.role}</Badge>
                     </div>
-                    <p className="text-sm text-gray-600">{user.email}</p>
-                    <p className="text-xs text-gray-500">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                    <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>{user.email}</p>
+                    <p className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>Joined {new Date(user.createdAt).toLocaleDateString()}</p>
                   </div>
 
                   {canManageUsers && user._id !== currentUser?._id && (
@@ -298,8 +300,8 @@ export default function MembersPage() {
 
         {users.length === 0 && (
           <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No team members</h3>
-            <p className="text-gray-600">Invite your first team member to get started</p>
+            <h3 className={`text-lg font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>No team members</h3>
+            <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Invite your first team member to get started</p>
           </div>
         )}
       </div>
