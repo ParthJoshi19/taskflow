@@ -109,7 +109,6 @@ export default function TasksPage() {
   const createTask = async () => {
     try {
       const token = localStorage.getItem("token")
-      console.log(newTask)
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tasks/createTask`,{token,newTask})
 
       if (response.status) {
@@ -132,7 +131,6 @@ export default function TasksPage() {
   const updateTaskStatus = async (taskId: string, status: string) => {
     try {
       const token = localStorage.getItem("token");
-      console.log("Clicked")
       const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/tasks/updateTask`,{taskId,status,token})
 
       if(response.status===403){
