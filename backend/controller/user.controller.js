@@ -137,21 +137,23 @@ const getInfo = async (req, res, next) => {
       token,
       process.env.JWT_SECRET || "fallback-secret"
     );
-    const user = await User.findById(decoded.userId).select("-password")
+    const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
-      return res.json({ success: false, message: "User not found" }).status(401);
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
     }
 
-    const users=await User.find({
-      organizationId:user.organizationId
-    })
+    const users = await User.find({
+      organizationId: user.organizationId,
+    });
     return res.json(users);
   } catch (error) {
-    console.error("Error while getting users",error)
+    console.error("Error while getting users", error);
   }
 };
 
-const getInvite=async(req,res)=>{
+const getInvite = async (req, res) => {
   try {
     const { token } = req.query;
     if (!token) {
@@ -161,16 +163,21 @@ const getInvite=async(req,res)=>{
       token,
       process.env.JWT_SECRET || "fallback-secret"
     );
-    const user = await User.findById(decoded.userId).select("-password")
+    const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
-      return res.json({ success: false, message: "User not found" }).status(401);
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
     }
 
     if (!["Admin", "Manager"].includes(user.role)) {
-      return NextResponse.json({ message: "Insufficient permissions" }, { status: 403 })
+      return NextResponse.json(
+        { message: "Insufficient permissions" },
+        { status: 403 }
+      );
     }
 
-    const organization = await Organization.findById(user.organizationId)
+    const organization = await Organization.findById(user.organizationId);
 
     if (!organization) {
       return res.json({ message: "Organization not found" }).status(404);
@@ -178,8 +185,80 @@ const getInvite=async(req,res)=>{
 
     return res.json({ inviteCode: organization.inviteCode });
   } catch (error) {
-    console.error("Get invite code error:",error)
+    console.error("Get invite code error:", error);
+  }
+};
+
+const updateRole = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.json({ message: "No token provided" }).status(401);
+    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
+    }
+    if (!["Admin", "Manager"].includes(user.role)) {
+      return NextResponse.json(
+        { message: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+    const {newRole,userId}=req.body;
+    const newUser=await User.findById(userId).select("-password");
+    if(!newUser){
+      return res.json({message:"User Not found"}).status(400);
+    }
+    newUser.role=newRole;
+    await newUser.save();
+    return res.json({message:"Role updated successfully"}).status(200);
+  } catch (error) {
+    console.error("Error while updating error",error);
+    return res.json({message:"Error while updating error"}).status(500);
+  }
+};
+
+const removeUser=async(req,res)=>{
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.json({ message: "No token provided" }).status(401);
+    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
+    }
+    if (!["Admin", "Manager"].includes(user.role)) {
+      return NextResponse.json(
+        { message: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
+    const {userId}=req.query;
+    const isRemoved=await User.findByIdAndDelete(userId);
+    if(!isRemoved){
+      return res.json({message:"User not found"}).status(400);
+    }
+    return res.json({message:"User removed successfully"}).status(200);
+
+  } catch (error) {
+    console.log("Error while removing user",error);
+    return res.json({message:"Error while removing user"}).status(500);
   }
 }
 
-export default { register, join, login ,getInfo,getInvite};
+export default { register, join, login, getInfo, getInvite, updateRole,removeUser };

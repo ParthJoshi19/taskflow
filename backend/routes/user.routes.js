@@ -52,4 +52,24 @@ router.get(
   [body("token").notEmpty().withMessage("Token not provided")],
   userController.getInvite
 );
+
+router.patch(
+  "/updateUserRole",
+  [
+    body("token").notEmpty().withMessage("Token not provided"),
+    body("userId").isEmpty().withMessage("User Id is needed"),
+    body("newRole").isEmpty().withMessage("New Role is needed"),
+  ],
+  userController.updateRole
+);
+
+router.delete(
+  "/removeUser",
+  [
+    body("token").notEmpty().withMessage("Token not provided"),
+    body("userId").isEmpty().withMessage("User Id is needed"),
+  ],
+  userController.removeUser
+);
+
 export default router;

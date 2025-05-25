@@ -180,7 +180,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="w-full h-screen">
+      <div className="w-full h-screen overflow-y-scroll">
         <div className="">
           {/* Top navigation */}
           <div className={`sticky top-0 z-40 ${theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white'} shadow-sm border-b`}>

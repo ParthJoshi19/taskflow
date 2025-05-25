@@ -82,20 +82,12 @@ export default function MembersPage() {
 
   const sendInvite = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const response = await fetch("/api/organization/invite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(inviteData),
-      })
-
-      if (response.ok) {
+      const response = "Sent"
+      if (response) {
         setShowInviteDialog(false)
         setInviteData({ email: "", role: "Member" })
         // Show success message
+        alert("Sent")
       }
     } catch (error) {
       console.error("Failed to send invite:", error)
@@ -105,16 +97,9 @@ export default function MembersPage() {
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch(`/api/users/${userId}/role`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ role: newRole }),
-      })
+      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/user/updateUserRole`,{token,userId,newRole})
 
-      if (response.ok) {
+      if (response.status===200) {
         fetchUsers()
       }
     } catch (error) {
@@ -126,14 +111,9 @@ export default function MembersPage() {
     if (confirm("Are you sure you want to remove this user?")) {
       try {
         const token = localStorage.getItem("token")
-        const response = await fetch(`/api/users/${userId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/user/removeUser`,{params:{token:token,userId:userId}})
 
-        if (response.ok) {
+        if (response.status===200) {
           fetchUsers()
         }
       } catch (error) {
@@ -176,7 +156,7 @@ export default function MembersPage() {
 
   return (
     <DashboardLayout>
-      <div className={`space-y-6 w-[100%] ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>
+      <div className={`space-y-6 w-[100%] ${theme === 'dark' ? 'bg-slate-900 text-white' : ''} `}>
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Team Members</h1>
