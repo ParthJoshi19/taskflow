@@ -15,7 +15,11 @@ app.get('/', (req, res) => {
     res.send('Hello from Express backend!');
 });
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://your-frontend.vercel.app',
+  credentials: true
+}));
+
 
 app.use('/user',userRoute)
 app.use('/tasks',taskRoute)
