@@ -16,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +30,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("create");
-
+  const navigate=useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -68,7 +69,7 @@ export default function RegisterPage() {
       if (response.status) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       } else {
         setError(data.message || "Registration failed");
       }
