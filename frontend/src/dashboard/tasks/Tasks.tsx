@@ -47,6 +47,8 @@ interface TaskUser {
   role: string
 }
 
+
+
 export default function TasksPage() {
   const { theme } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([])
@@ -57,7 +59,6 @@ export default function TasksPage() {
   const [priorityFilter, setPriorityFilter] = useState("all")
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
-
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -106,6 +107,18 @@ export default function TasksPage() {
     }
   }
 
+  const sendNotification=async(message:string,assignedTo:string)=>{
+    try {
+      const token=localStorage.getItem("token");
+      const responce=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/sendNotifcation`,{message,assignedTo,token});
+      if(responce.status===200){
+        
+      }
+    } catch (error) {
+      console.error("Error while send notification",error);
+    }
+  }
+
   const createTask = async () => {
     try {
       const token = localStorage.getItem("token")
@@ -113,6 +126,7 @@ export default function TasksPage() {
 
       if (response.status) {
         setShowCreateDialog(false)
+        sendNotification("New Task is assigned!!!",newTask.assignedTo);
         setNewTask({
           title: "",
           description: "",
@@ -121,7 +135,7 @@ export default function TasksPage() {
           dueDate: "",
           assignedTo: "",
         })
-        fetchTasks()
+        fetchTasks();
       }
     } catch (error) {
       console.error("Failed to create task:", error)
@@ -196,7 +210,6 @@ export default function TasksPage() {
       </DashboardLayout>
     )
   }
-
   return (
     <DashboardLayout>
       <div className={`space-y-6 w-full ${theme === 'dark' ? 'bg-slate-900 text-white' : ''}`}>

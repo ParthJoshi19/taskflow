@@ -72,4 +72,14 @@ router.delete(
   userController.removeUser
 );
 
+router.post(
+  "/sendNotifcation",
+  [
+    body("message").isEmpty().withMessage("Message fuck you is required"),
+    body("assignedTo").isEmpty().withMessage("Assigned to is required"),
+    body("token").notEmpty().withMessage("Token not provided"),
+  ],
+  userController.sendNotification
+);
+
 export default router;

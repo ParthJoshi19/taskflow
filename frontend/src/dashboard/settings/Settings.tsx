@@ -12,6 +12,7 @@ import DashboardLayout from "@/components/dashboard-layout"
 import axios from 'axios';
 import { Loader2 } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
+import { useNavigate } from "react-router-dom"
 
 export default function SettingsPage() {
   const { theme } = useTheme();
@@ -19,7 +20,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [currentUser, setCurrentUser] = useState<any>(null)
-
+  const navigate=useNavigate();
   const [settings, setSettings] = useState({
     name: "",
     theme: "light",
@@ -62,7 +63,11 @@ export default function SettingsPage() {
 
       if (response.status === 200) {
         setMessage("Settings saved successfully!")
-        fetchOrganization()
+        fetchOrganization();
+        navigate(0);
+        setTimeout(()=>{
+          setMessage("");
+        },2000)
       } else {
         setMessage("Failed to save settings")
       }

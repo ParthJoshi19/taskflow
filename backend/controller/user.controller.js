@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "./../models/user.model.js";
 import Organization from "./../models/Organization.model.js";
+import Notification from "../models/notification.model.js";
 const register = async (req, res, next) => {
   try {
     const { name, email, password, organizationName } = req.body;
@@ -261,4 +262,44 @@ const removeUser=async(req,res)=>{
   }
 }
 
-export default { register, join, login, getInfo, getInvite, updateRole,removeUser };
+
+const sendNotification = async (req, res) => {
+  try {
+    const { message, assignedTo, token } = req.body;
+    if (!token) {
+      return res.json({ message: "No token provided" }).status(401);
+    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res
+        .json({ success: false, message: "User not found" })
+        .status(401);
+    }
+
+    const assignedUser = await User.find({email:assignedTo});
+    if (!assignedUser) {
+      return res.json({ message: "User not found" }).status(400);
+    }
+    const userId=decoded.userId;
+    const newNot=new Notification({
+      userId,message,read:false,assignedTo
+    })
+
+    await newNot.save();
+
+    return res
+      .json({ message: "Notification sent successfully" })
+      .status(200);
+  } catch (error) {
+    console.error("Error while sending notification", error);
+    return res
+      .json({ message: "Error while sending notification" })
+      .status(500);
+  }
+};
+
+export default { register, join, login, getInfo, getInvite, updateRole,removeUser,sendNotification };

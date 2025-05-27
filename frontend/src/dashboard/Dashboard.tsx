@@ -45,7 +45,7 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="animate-spin text-blue-500"/>
+          <Loader2 className="animate-spin text-blue-500 h-12 w-12"/>
         </div>
       </DashboardLayout>
     )

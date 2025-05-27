@@ -26,6 +26,7 @@ import {
   Loader2,
 } from "lucide-react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -36,6 +37,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const {theme}=useTheme() as any;
+  const navigate=useNavigate();
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -44,7 +46,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       fetchOrganization();
       fetchNotifications();
     } else {
-      window.location.href = "/user/login";
+      navigate("/login");
     }
   }, [window.location.href]);
 
@@ -85,7 +87,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const navigation = [
@@ -154,16 +156,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <h3 className={`text-sm font-medium ${theme==='light'?"text-gray-600":""} uppercase tracking-wider`}>
               Organization
             </h3>
-            <p className="mt-1 text-lg font-medium">{organization?.name}</p>
+            {organization?<p className="mt-1 text-lg font-medium">{organization?.name}</p>:<p className="p-3"></p>}
           </div>
 
           <nav className="space-y-2">
             {navigation.map((item) => {
               const isActive = window.location.href === item.href;
               return (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={`${item.href}`}
                   className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-blue-50 text-blue-800"
@@ -172,7 +174,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
           </nav>
