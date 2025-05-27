@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     } else {
       navigate("/login");
     }
-  }, [window.location.href]);
+  }, []);
 
   const fetchOrganization = async () => {
     try {
